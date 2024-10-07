@@ -2122,7 +2122,7 @@ text = "Quit "
 [node name="Background" parent="." instance=ExtResource("3_d88fh")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(259, -180)
+position = Vector2(247, -181)
 zoom = Vector2(3, 3)
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]

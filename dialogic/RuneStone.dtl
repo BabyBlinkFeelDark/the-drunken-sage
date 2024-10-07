@@ -1,0 +1,18 @@
+join Player (mind_storm) left
+Player (thinking): Это еще что за хрень?
+Player (mind_storm): ...
+leave Player
+join RuneStone left
+RuneStone: ...
+RuneStone: О, странник, что нарушил мой покой!
+leave RuneStone
+join Player (mind_storm) left
+Player (surprize): Чо?! Оно разговаривает?!
+leave Player
+join RuneStone left
+RuneStone: Я — древний камень, хранитель забытого знания. Ты не осознаешь, что освободил не просто духа, но и опасность, что спит в те...
+leave RuneStone
+join Player (mind_storm) left
+Player (speak): Отлично! У меня и так голова болит от вчерашней попойки
+Player (mind_storm): А тут еще и говорящие камни!
+Player (sad): Надо бы посетить старуху ведунью...

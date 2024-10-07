@@ -29,15 +29,29 @@ var itsWall=false
 @onready var catscene: CatScene
 var is_catscene: bool
 var start_catscene: bool
+var footstep_sound: AudioStreamPlayer2D
+var jump_sound: AudioStreamPlayer2D
 signal u_turn
+
 func _ready() -> void:
+	footstep_sound = $Running
+	jump_sound = $Jump
 	pass
 
 
 func _physics_process(delta: float) -> void:
 	Global.connect("catscene", Callable(self, "_on_catscene"))
-
-
+	
+	if velocity.length() > 0 and is_on_floor():
+		if not footstep_sound.playing:
+			footstep_sound.play()
+	else:
+		footstep_sound.stop()
+		
+	#if velocity.y < 0 and not is_on_floor():
+		#jump_sound.play()
+	
+		
 	if not start_catscene:
 		cooldown_dash+=get_process_delta_time()
 		$Pivot/Camera2D.position_smoothing_enabled=true
@@ -72,6 +86,8 @@ func _physics_process(delta: float) -> void:
 	
 
 func walk_state(vel_del):
+	
+	print($Running.playing)
 	$PointLight2D.energy = 0
 	var direction := Input.get_axis("left", "right")
 	if direction:
@@ -86,9 +102,11 @@ func walk_state(vel_del):
 	if direction == -1:
 		u_turn.emit("left")
 		anim.flip_h=true
+		$eyes.scale = Vector2(-1,1)
 	elif direction == 1:
 		u_turn.emit("right")	
 		anim.flip_h=false
+		$eyes.scale = Vector2(1,1)
 	
 	
 	
@@ -104,7 +122,8 @@ func walk_state(vel_del):
 		state=CLIMB 
 
 
-func jump_state():	
+func jump_state():
+	jump_sound.play()	
 	if jump_scale<2:
 		jump_scale+=1
 		velocity = Vector2.ZERO

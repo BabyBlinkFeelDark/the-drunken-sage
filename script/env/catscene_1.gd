@@ -1,7 +1,7 @@
 extends Node2D
 class_name CatScene
-
 var isCatscene:bool = true
+@onready var level_scene = preload("res://textures/background/level.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	
@@ -10,9 +10,17 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	$AnimationPlayer.play("start")
+	#$AnimationPlayer.play("start")
+	print(level_scene)
 	Global.emit_signal("catscene",isCatscene)
 	$level/Player/Pivot/Camera2D.enabled = false
+	
+	"""
+	Перезаписать решение
+	"""
+	get_tree().change_scene_to_packed(level_scene) 
 	await $AnimationPlayer.animation_finished
-	get_tree().change_scene_to_file("res://textures/background/level.tscn")
+	
 	pass
+	
+	

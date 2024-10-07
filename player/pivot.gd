@@ -20,7 +20,7 @@ func _on_player_u_turn(anim_direction):
 	match anim_direction:
 		"right":
 			position.x=50
-			position.y=-50+amplitude * sin(time_passed * frequency)
+			position.y=-75+amplitude * sin(time_passed * frequency)
 		"left":
 			position.x=-50
-			position.y=-50+amplitude * sin(time_passed * frequency)
+			position.y=-75+amplitude * sin(time_passed * frequency)
