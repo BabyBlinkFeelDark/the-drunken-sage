@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://weu4pgaypo8f"]
+
+[ext_resource type="Texture2D" uid="uid://qp8j616lvwq3" path="res://textures/Clouds 3/1.png" id="1_br0y0"]
+
+[node name="Background" type="ParallaxBackground"]
+layer = -1
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="."]
+z_index = 1
+motion_mirroring = Vector2(576, 0)
+
+[node name="1" type="Polygon2D" parent="ParallaxLayer"]
+modulate = Color(0.505344, 0.505344, 0.505344, 1)
+position = Vector2(0, -320)
+scale = Vector2(2, 2)
+color = Color(0.76662, 0.76662, 0.76662, 1)
+texture = ExtResource("1_br0y0")
+polygon = PackedVector2Array(-288, 162, -288, -162, 288, -162, 288, 162)
+uv = PackedVector2Array(0, 324, 0, 0, 576, 0, 576, 324)
+polygons = [PackedInt32Array(0, 1, 2, 3)]
