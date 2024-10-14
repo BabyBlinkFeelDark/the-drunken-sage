@@ -1,18 +1,24 @@
-join Player (mind_storm) left
-Player (thinking): Это еще что за хрень?
-Player (mind_storm): ...
-leave Player
-join RuneStone left
+join player_dark (mind_storm_dark) left
+player_dark (mind_storm_dark): Это еще что за хрень?
+player_dark (question_dark): ...
+leave player_dark
+join RuneStone right
 RuneStone: ...
 RuneStone: О, странник, что нарушил мой покой!
 leave RuneStone
-join Player (mind_storm) left
-Player (surprize): Чо?! Оно разговаривает?!
-leave Player
-join RuneStone left
+join player_dark (shocked_dark) left
+player_dark (shocked_dark): Чо?! Оно разговаривает?!
+leave player_dark
+join RuneStone right
 RuneStone: Я — древний камень, хранитель забытого знания. Ты не осознаешь, что освободил не просто духа, но и опасность, что спит в те...
 leave RuneStone
-join Player (mind_storm) left
-Player (speak): Отлично! У меня и так голова болит от вчерашней попойки
-Player (mind_storm): А тут еще и говорящие камни!
-Player (sad): Надо бы посетить старуху ведунью...
+join player_dark (speak_dark) left
+player_dark (speak_dark): Отлично! У меня и так голова болит от вчерашней попойки
+player_dark (mind_storm_dark): А тут еще и говорящие камни!
+player_dark (sad_dark): Надо бы посетить старуху ведунью...
+do Global.go_to_tavern()
+player_dark (question_dark): Что?...
+leave player_dark
+...
+[wait time="1.0"]
+do Global.tp_tavern()

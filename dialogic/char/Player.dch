@@ -20,8 +20,8 @@
 "image": "\"res://dialogic/char/player/angry.png\""
 },
 "mirror": false,
-"offset": Vector2(0, 0),
-"scale": 1,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
 "scene": ""
 },
 "mind_storm": {
@@ -29,8 +29,17 @@
 "image": "\"res://dialogic/char/player/mind_storm.png\""
 },
 "mirror": false,
-"offset": Vector2(0, 0),
-"scale": 1,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
+"scene": ""
+},
+"question": {
+"export_overrides": {
+"image": "\"res://dialogic/char/player/thinking.png\""
+},
+"mirror": false,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
 "scene": ""
 },
 "sad": {
@@ -38,8 +47,17 @@
 "image": "\"res://dialogic/char/player/sad.png\""
 },
 "mirror": false,
-"offset": Vector2(0, 0),
-"scale": 1,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
+"scene": ""
+},
+"shocked": {
+"export_overrides": {
+"image": "\"res://dialogic/char/player/surprize.png\""
+},
+"mirror": false,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
 "scene": ""
 },
 "smile": {
@@ -47,8 +65,8 @@
 "image": "\"res://dialogic/char/player/smile.png\""
 },
 "mirror": false,
-"offset": Vector2(0, 0),
-"scale": 1,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
 "scene": ""
 },
 "speak": {
@@ -56,26 +74,8 @@
 "image": "\"res://dialogic/char/player/speak.png\""
 },
 "mirror": false,
-"offset": Vector2(0, 0),
-"scale": 1,
-"scene": ""
-},
-"surprize": {
-"export_overrides": {
-"image": "\"res://dialogic/char/player/surprize.png\""
-},
-"mirror": false,
-"offset": Vector2(0, 0),
-"scale": 1,
-"scene": ""
-},
-"thinking": {
-"export_overrides": {
-"image": "\"res://dialogic/char/player/thinking.png\""
-},
-"mirror": false,
-"offset": Vector2(0, 0),
-"scale": 1,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
 "scene": ""
 }
 },

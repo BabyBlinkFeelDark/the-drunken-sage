@@ -8,9 +8,10 @@ enum {
 	CLIMB,
 	ATTACK,
 	DASH,
+	TELEPORT,
 	DAMAGE
 }
-
+var target_position 
 const SPEED = 150.0
 const JUMP_VELOCITY = -400.0
 @onready var anim = $AnimatedSprite2D
@@ -31,6 +32,8 @@ var is_catscene: bool
 var start_catscene: bool
 var footstep_sound: AudioStreamPlayer2D
 var jump_sound: AudioStreamPlayer2D
+var start_point
+var del
 signal u_turn
 
 func _ready() -> void:
@@ -38,9 +41,17 @@ func _ready() -> void:
 	jump_sound = $Jump
 	pass
 
+func _process(delta: float) -> void:
 
+	del = delta 
+	Global.player_velocity = velocity
+	Global.player_position = global_position
+	Global.player_can_fly.connect(_on_catscene)
+	
+	
 func _physics_process(delta: float) -> void:
-	Global.connect("catscene", Callable(self, "_on_catscene"))
+	if Input.is_action_just_pressed("up"):
+		state=TELEPORT
 	
 	if velocity.length() > 0 and is_on_floor():
 		if not footstep_sound.playing:
@@ -72,6 +83,8 @@ func _physics_process(delta: float) -> void:
 				dash_state(delta)
 			DAMAGE:
 				damage_state()
+			TELEPORT:
+				teleport_state()
 		
 		if not is_on_floor():
 				velocity.y += get_gravity().y * delta
@@ -79,15 +92,14 @@ func _physics_process(delta: float) -> void:
 			jump_scale=0
 			itsWall=false
 		
-		move_and_slide()
+		
 	
 	
 
 	
 
 func walk_state(vel_del):
-	
-	print($Running.playing)
+	move_and_slide()
 	$PointLight2D.energy = 0
 	var direction := Input.get_axis("left", "right")
 	if direction:
@@ -102,11 +114,11 @@ func walk_state(vel_del):
 	if direction == -1:
 		u_turn.emit("left")
 		anim.flip_h=true
-		$eyes.scale = Vector2(-1,1)
+		#$eyes.scale = Vector2(-1,1)
 	elif direction == 1:
 		u_turn.emit("right")	
 		anim.flip_h=false
-		$eyes.scale = Vector2(1,1)
+		#$eyes.scale = Vector2(1,1)
 	
 	
 	
@@ -123,6 +135,7 @@ func walk_state(vel_del):
 
 
 func jump_state():
+	move_and_slide()
 	jump_sound.play()	
 	if jump_scale<2:
 		jump_scale+=1
@@ -138,7 +151,7 @@ func jump_state():
 		state=WALK
 
 func dash_state(vel):
-	
+	move_and_slide()
 	var direction := Input.get_axis("left", "right")
 	$PointLight2D.energy = lerpf(2,0,0.1)
 
@@ -167,25 +180,8 @@ func dash_state(vel):
 
 func climb_state():
 	var direction := Input.get_axis("left", "right")
-	#if Input.is_action_pressed("jump") and jump_scale<3 and canClipb==true:
-		#anim_player.play("grip")
-		#velocity.y=-direction * SPEED * 2
-	#elif jump_scale<3 and canClipb==true and itsWall==true:
-		#anim_player.play("fall")
-		#velocity = Vector2.ZERO
-	##itsWall=false
-	#if Input.is_action_just_pressed("jump") and jump_scale<3:
-		#state = JUMP
-		#itsWall=false
-	#elif jump_scale>1 and not is_on_floor():
-		#state = FALL
-	#elif Input.is_action_just_pressed("bash") and direction!=0:
-		#state = DASH
-	#else:
-		#state = WALK
-		#await get_tree().create_timer(colddown_climp).timeout
-		#canClipb=true	
-	
+
+
 func damage_state():
 	anim_player.play("damage")
 	await anim_player.animation_finished
@@ -203,10 +199,11 @@ func _on_detect_wall_body_exited(body: Node2D) -> void:
 
 	
 func fall_state():
+	move_and_slide()
 	if not is_on_floor():
 		anim_player.play("fall")
 	
-	if Input.is_action_just_pressed("bash"):
+	elif Input.is_action_just_pressed("bash"):
 		state=DASH
 	else:
 		state=WALK
@@ -223,6 +220,25 @@ func death_state():
 		#canDash=false
 		#await get_tree().create_timer(colddown_dash).timeout
 		#canDash=true
-		
-func _on_catscene(is_catscene):
-	start_catscene = true
+func teleport_state():
+	#velocity.y=0dd
+	
+	if position.y>=target_position:
+		move_and_slide()
+		velocity.y = JUMP_VELOCITY * del *20
+	else:
+		velocity.y=0
+		Global.spawn_portal()
+
+	
+
+func _on_catscene(start_point,y):
+
+	if start_point == "up":
+		target_position = y - 50
+		state=TELEPORT
+
+	
+	
+	
+	

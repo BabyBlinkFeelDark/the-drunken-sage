@@ -1,0 +1,83 @@
+{
+"@path": "res://addons/dialogic/Resources/character.gd",
+"@subpath": NodePath(""),
+"_translation_id": "",
+"color": Color(1, 1, 1, 1),
+"custom_info": {
+"sound_mood_default": "",
+"sound_moods": {},
+"style": ""
+},
+"default_portrait": "angry_dark",
+"description": "",
+"display_name": "Боззе",
+"mirror": false,
+"nicknames": [""],
+"offset": Vector2(0, 0),
+"portraits": {
+"angry_dark": {
+"export_overrides": {
+"image": "\"res://dialogic/char/player/withShadow/angry_dark.png\""
+},
+"mirror": false,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
+"scene": ""
+},
+"mind_storm_dark": {
+"export_overrides": {
+"image": "\"res://dialogic/char/player/withShadow/mind_storm_dark.png\""
+},
+"mirror": false,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
+"scene": ""
+},
+"question_dark": {
+"export_overrides": {
+"image": "\"res://dialogic/char/player/withShadow/question_dark.png\""
+},
+"mirror": false,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
+"scene": ""
+},
+"sad_dark": {
+"export_overrides": {
+"image": "\"res://dialogic/char/player/withShadow/sad_dark.png\""
+},
+"mirror": false,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
+"scene": ""
+},
+"shocked_dark": {
+"export_overrides": {
+"image": "\"res://dialogic/char/player/withShadow/shocked_dark.png\""
+},
+"mirror": false,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
+"scene": ""
+},
+"smile_dark": {
+"export_overrides": {
+"image": "\"res://dialogic/char/player/withShadow/smile_dark.png\""
+},
+"mirror": false,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
+"scene": ""
+},
+"speak_dark": {
+"export_overrides": {
+"image": "\"res://dialogic/char/player/withShadow/speak_dark.png\""
+},
+"mirror": false,
+"offset": Vector2(-140, 0),
+"scale": 0.65,
+"scene": ""
+}
+},
+"scale": 1.0
+}

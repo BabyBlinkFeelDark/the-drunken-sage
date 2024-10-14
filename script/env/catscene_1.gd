@@ -11,7 +11,6 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	#$AnimationPlayer.play("start")
-	print(level_scene)
 	Global.emit_signal("catscene",isCatscene)
 	$level/Player/Pivot/Camera2D.enabled = false
 	
