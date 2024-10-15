@@ -1,7 +1,9 @@
 extends Node
 signal catscene
 signal player_can_fly
-
+signal enemy_attack(default_damage)
+var player_hp
+var player_st
 var player_position
 var player_velocity
 var SCENE

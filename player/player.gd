@@ -1,5 +1,7 @@
 extends CharacterBody2D
+class_name Player
 
+# Перечисление состояний персонажа.
 enum {
 	WALK,
 	DEATH,
@@ -11,95 +13,127 @@ enum {
 	TELEPORT,
 	DAMAGE
 }
+
+# Основные переменные
 var target_position 
 const SPEED = 150.0
 const JUMP_VELOCITY = -400.0
 @onready var anim = $AnimatedSprite2D
 @onready var anim_player = $AnimationPlayer
+@onready var DashAttackArea = $HitBoxs
+@onready var npc: NPC
 var health = 100
-var money = 0
-var jump_scale = 2
-var state = WALK
-var DASH_VEL = 1
-var canDash = true
-var canClipb = true
+var stamina 
+var dash_cost = 10
+var jump_scale = 0
+var state 
+
+var time_to_signal = false
 var inJump = false
 var cooldown_dash = 0
 var itsDamage = false
 var itsWall=false
-@onready var catscene: CatScene
+
 var is_catscene: bool
 var start_catscene: bool
 var footstep_sound: AudioStreamPlayer2D
 var jump_sound: AudioStreamPlayer2D
 var start_point
 var del
-signal u_turn
+const default_damage = 10
 
+signal u_turn
+signal hit_enemy
+signal stamina_changet
+signal ulta_changet
+
+
+# Метод, вызываемый при инициализации узла.
 func _ready() -> void:
+	"""
+	Инициализация параметров игрока и подключение сигналов.
+  
+	Устанавливает начальное состояние персонажа в WALK, инициализирует звуковые эффекты и подключает сигнал для получения урона.
+	"""
 	footstep_sound = $Running
 	jump_sound = $Jump
+	DashAttackArea.visible = false
+	state = WALK
+	Global.connect("enemy_attack",Callable(self, "_on_damage_receive"))
+	Global.player_hp=health
 	pass
 
 func _process(delta: float) -> void:
-
+	"""
+	Обновляет состояние игрока каждый кадр.
+  
+	Отображает текущее здоровье игрока на UI и обновляет глобальные параметры игрока.
+  
+	:param delta: Время, прошедшее с последнего кадра.
+	"""
+	$Label.set_text(str(health))
 	del = delta 
 	Global.player_velocity = velocity
 	Global.player_position = global_position
 	Global.player_can_fly.connect(_on_catscene)
-	
-	
+
+# Метод, вызываемый каждый кадр в физическом процессе.
 func _physics_process(delta: float) -> void:
-	if Input.is_action_just_pressed("up"):
-		state=TELEPORT
-	
+	"""
+	Обрабатывает физику движения персонажа.
+
+	Управляет звуковыми эффектами при движении и переключает состояния персонажа в зависимости от текущего состояния.
+
+	:param delta: Время, прошедшее с последнего кадра.
+	"""
+
+ 	# Звук при ходьбе
 	if velocity.length() > 0 and is_on_floor():
 		if not footstep_sound.playing:
 			footstep_sound.play()
 	else:
 		footstep_sound.stop()
-		
-	#if velocity.y < 0 and not is_on_floor():
-		#jump_sound.play()
-	
-		
-	if not start_catscene:
-		cooldown_dash+=get_process_delta_time()
-		$Pivot/Camera2D.position_smoothing_enabled=true
-		match state:
-			WALK:
-				walk_state(delta)
-			JUMP:
-				jump_state()
-			FALL:
-				fall_state()
-			CLIMB:
-				pass
-			ATTACK:
-				pass
-			DEATH:
-				death_state()
-			DASH:
-				dash_state(delta)
-			DAMAGE:
-				damage_state()
-			TELEPORT:
-				teleport_state()
-		
-		if not is_on_floor():
-				velocity.y += get_gravity().y * delta
-		else:
-			jump_scale=0
-			itsWall=false
-		
-		
-	
-	
+	if cooldown_dash<0.5:
+			cooldown_dash+=get_process_delta_time()
+	else:
+		cooldown_dash=0.5
+	$Pivot/Camera2D.position_smoothing_enabled=true
+	# Переключение состояний персонажа
+	match state:
+		WALK:
+			walk_state(delta)
+		JUMP:
+			jump_state()
+		FALL:
+			fall_state()
+		CLIMB:
+			pass
+		ATTACK:
+			pass
+		DEATH:
+			death_state()
+		DASH:
+			dash_state(delta)
+		DAMAGE:
+			damage_state()
+		TELEPORT:
+			teleport_state()
 
-	
+	if not is_on_floor():
+		velocity.y += get_gravity().y * delta
 
+
+# Метод для состояния WALK.
 func walk_state(vel_del):
+	"""
+	Обрабатывает состояние ходьбы персонажа.
+  
+	Персонаж движется влево или вправо, проигрывает соответствующую анимацию и проверяет условия для перехода в другие состояния.
+  
+	:param vel_del: Время, прошедшее с последнего кадра (не используется в данном методе).
+	"""
 	move_and_slide()
+	DashAttackArea.set_monitoring(false)
 	$PointLight2D.energy = 0
 	var direction := Input.get_axis("left", "right")
 	if direction:
@@ -110,118 +144,163 @@ func walk_state(vel_del):
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		if velocity.y == 0:
 			anim_player.play('Idle')
-		
+	# Сигналы о направлении взгляда персонажа	
 	if direction == -1:
 		u_turn.emit("left")
 		anim.flip_h=true
-		#$eyes.scale = Vector2(-1,1)
+
 	elif direction == 1:
 		u_turn.emit("right")	
 		anim.flip_h=false
-		#$eyes.scale = Vector2(1,1)
 	
-	
-	
-	if Input.is_action_just_pressed("dash") and cooldown_dash>0.5:
+	# Логика проверкии условий состояния
+	if Input.is_action_just_pressed("dash"):
+		time_to_signal=true
 		state=DASH
 	if Input.is_action_just_pressed("jump") and jump_scale<3:
 		state = JUMP
-	if jump_scale>1 and not is_on_floor():
+	if not is_on_floor():
 		state = FALL
 	if health<=0:
 		state=DEATH
-	if itsWall==true and jump_scale<3:
-		state=CLIMB 
 
 
+# Метод для состояния JUMP.
 func jump_state():
+	"""
+	Обрабатывает состояние прыжка персонажа.
+  
+	Персонаж выполняет прыжок, проигрывает соответствующую анимацию и изменяет состояние на FALL после прыжка.
+	"""
+	# Персонаж совершает прыжок
 	move_and_slide()
 	jump_sound.play()	
-	if jump_scale<2:
+	if jump_scale<3:
 		jump_scale+=1
-		velocity = Vector2.ZERO
-		velocity.y += JUMP_VELOCITY
+		#velocity = Vector2.ZERO
+		velocity.y = JUMP_VELOCITY
 		anim_player.play("Jump")
 		
-	if itsWall==true and jump_scale<3:
-		state=CLIMB
-	elif itsWall==false and jump_scale>2:
-		state=FALL
-	else:
-		state=WALK
+	state=FALL
 
+# Метод для состояния DASH.
 func dash_state(vel):
+	"""
+	Обрабатывает состояние рывка персонажа.
+  
+	Проверяет условия для выполнения рывка, проигрывает соответствующую анимацию 
+	и изменяет состояние обратно на WALK или FALL в зависимости от положения персонажа.
+  
+	:param vel: Время, прошедшее с последнего кадра (не используется в данном методе).
+	"""
 	move_and_slide()
-	var direction := Input.get_axis("left", "right")
-	$PointLight2D.energy = lerpf(2,0,0.1)
 
+	if cooldown_dash == 0.5 and stamina > dash_cost:
+		if time_to_signal:
+			stamina_changet.emit(dash_cost)
+			time_to_signal=false
+		DashAttackArea.set_monitoring(true)
+			
+		var direction := Input.get_axis("left", "right")
+		$PointLight2D.energy = lerpf(2, 0, 0.1)
 
-	
-	if direction==0:
-		if anim.flip_h:
-			velocity.x+=+1000
+		if direction != 0:
 
-		else:
-			velocity.x+=-1000
+			anim_player.play("Dash")
+			$Pivot.position.x = 150 * direction
+			velocity.x += (50 * direction)
+			velocity.y = 0
+				
+			await anim_player.animation_finished
+			cooldown_dash = 0
 
-	else:
-		anim_player.play("Dash")
-		$Pivot.position.x=150*direction
-		velocity.x+=(50*direction)
-		velocity.y += 0
-		await anim_player.animation_finished
 		
-	if jump_scale>2:
-		state=FALL
-	else:	
+	DashAttackArea.set_monitoring(false)
+	if not is_on_floor():
+		state = FALL
+	else:
 		state=WALK
-	cooldown_dash = 0 
-	
+
 
 func climb_state():
 	var direction := Input.get_axis("left", "right")
 
 
+# Метод для состояния DAMAGE.
 func damage_state():
-	anim_player.play("damage")
-	await anim_player.animation_finished
+	"""
+	Обрабатывает состояние получения урона персонажем.
+  
+	Обновляет здоровье игрока и проигрывает анимацию получения урона, после чего возвращает состояние к WALK.
+	"""
+	# Персонаж получает урон. Обновляем глобальную переменую количество 'health' персонажа
+	Global.player_hp = health
+	#print("oooooatch")
+	#anim_player.play("damage")
+	#await anim_player.animation_finished
 	state = WALK
 	pass
 
 
-func _on_detect_wall_body_entered(body: Node2D) -> void:
-	itsWall=true
-
-
-func _on_detect_wall_body_exited(body: Node2D) -> void:
-	itsWall=false
-	state=WALK
-
-	
+# Метод для состояния FALL.
 func fall_state():
+	"""
+	Обрабатывает состояние падения персонажа.
+  
+	Персонаж не находится на земле и проигрывает анимацию падения. 
+	Управляет движением влево и вправо, а также проверяет условия для перехода обратно в состояние WALK или JUMP.
+	"""
+	anim_player.play("Fall")
 	move_and_slide()
-	if not is_on_floor():
-		anim_player.play("fall")
+	$PointLight2D.energy = 0
 	
-	elif Input.is_action_just_pressed("bash"):
-		state=DASH
-	else:
-		state=WALK
+	var direction := Input.get_axis("left", "right")
+	if direction:
+		velocity.x = direction * SPEED #* del
 		
+	if direction == -1:
+		u_turn.emit("left")
+		anim.flip_h=true
+
+	elif direction == 1:
+		u_turn.emit("right")	
+		anim.flip_h=false
+			
+	if is_on_floor():
+		jump_scale=0
+		state=WALK
+
+	if Input.is_action_just_pressed("jump") and jump_scale<3:
+		state=JUMP
+	elif Input.is_action_just_pressed("dash"):
+		time_to_signal=true
+		state=DASH
+
+
+# Метод для состояния DEATH.
 func death_state():
+	"""
+	Обрабатывает состояние смерти персонажа.
+  
+	Если здоровье персонажа достигает нуля, проигрывается анимация смерти,
+	и персонаж удаляется из мира. После этого происходит переход на экран меню.
+"""
 	if health<=0:
 		health=0
 		anim_player.play("death")
 		await anim_player.animation_finished
 		queue_free()
 		get_tree(). change_scene_to_file("res://scene/menu.tscn")
-		
-#func cold_dash():
-		#canDash=false
-		#await get_tree().create_timer(colddown_dash).timeout
-		#canDash=true
+
+
+# Метод для состояния TELEPORT
 func teleport_state():
-	#velocity.y=0dd
+	"""
+	Обрабатывает состояние телепортации персонажа.
+  
+	Персонаж перемещается вверх до заданной целевой позиции, 
+	затем останавливается и вызывает создание портала.
+	"""
 	
 	if position.y>=target_position:
 		move_and_slide()
@@ -230,15 +309,40 @@ func teleport_state():
 		velocity.y=0
 		Global.spawn_portal()
 
-	
 
+# Метод, обрабатывающий начало кат-сцены.
 func _on_catscene(start_point,y):
-
+	"""
+	Устанавливает целевую позицию для телепортации в зависимости от точки начала кат-сцены.
+  
+	:param start_point: Направление начала кат-сцены ("up", "down", и т.д.).
+	:param y: Координата Y, определяющая целевую позицию.
+	"""
 	if start_point == "up":
 		target_position = y - 50
 		state=TELEPORT
 
-	
-	
-	
-	
+# Метод, вызываемый при входе тела в область hit_boxs_body.
+func _on_hit_boxs_body_entered(body: Node2D) -> void:
+	"""
+	Обрабатывает событие входа другого тела в зону hit_boxs_body.
+  
+	Вызывает сигнал hit_enemy с базовым значением урона.
+  
+	:param body: Вошедшее тело (Node2D).
+	"""
+	# Триггер: в зону hit_boxs_body вошло тело (body)
+	hit_enemy.emit(default_damage)
+
+
+# Метод, обрабатывающий получение урона персонажем.
+func _on_damage_receive(enemy_damage):
+	"""
+	Обрабатывает получение урона от врага.
+  
+	Уменьшает здоровье персонажа на величину полученного урона и изменяет состояние на DAMAGE.
+  
+	:param enemy_damage: Значение урона, полученное от врага.
+	"""
+	health-=enemy_damage
+	state=DAMAGE

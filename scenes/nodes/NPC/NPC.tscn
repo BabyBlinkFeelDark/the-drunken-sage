@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://dnpu0pnmnkcgj"]
+
+[ext_resource type="Script" path="res://script/mobs/NPC/npc.gd" id="1_nch83"]
+
+[node name="NPC" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 5
+script = ExtResource("1_nch83")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+
+[node name="HitBoxes" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBoxes"]
+
+[node name="ChaseArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ChaseArea"]
