@@ -11,6 +11,7 @@ enum {
 	ATTACK,
 	DASH,
 	TELEPORT,
+	ULTA,
 	DAMAGE
 }
 
@@ -20,7 +21,8 @@ const SPEED = 150.0
 const JUMP_VELOCITY = -400.0
 @onready var anim = $AnimatedSprite2D
 @onready var anim_player = $AnimationPlayer
-@onready var DashAttackArea = $HitBoxs
+@onready var DashAttackArea =$HitBoxs/DashHitBox
+@onready var UltaAttackArea =$HitBoxs/Ulta
 @onready var npc: NPC
 var health = 100
 var stamina 
@@ -46,7 +48,7 @@ signal u_turn
 signal hit_enemy
 signal stamina_changet
 signal ulta_changet
-
+signal dont_move
 
 # Метод, вызываемый при инициализации узла.
 func _ready() -> void:
@@ -55,9 +57,12 @@ func _ready() -> void:
   
 	Устанавливает начальное состояние персонажа в WALK, инициализирует звуковые эффекты и подключает сигнал для получения урона.
 	"""
+
+	$EFX.visible=false
 	footstep_sound = $Running
 	jump_sound = $Jump
 	DashAttackArea.visible = false
+	UltaAttackArea.visible = false
 	state = WALK
 	Global.connect("enemy_attack",Callable(self, "_on_damage_receive"))
 	Global.player_hp=health
@@ -118,6 +123,8 @@ func _physics_process(delta: float) -> void:
 			damage_state()
 		TELEPORT:
 			teleport_state()
+		ULTA:
+			ulta_state()
 
 	if not is_on_floor():
 		velocity.y += get_gravity().y * delta
@@ -159,6 +166,9 @@ func walk_state(vel_del):
 		state=DASH
 	if Input.is_action_just_pressed("jump") and jump_scale<3:
 		state = JUMP
+	if Input.is_action_just_pressed("LMB"):
+		
+		state=ULTA
 	if not is_on_floor():
 		state = FALL
 	if health<=0:
@@ -310,6 +320,16 @@ func teleport_state():
 		Global.spawn_portal()
 
 
+func ulta_state():
+	if $CanvasLayer.player_stats["Skills"]["Ulta"].value==100:
+		
+		UltaAttackArea.set_monitoring(true)
+		dont_move.emit(true)
+		anim_player.play("Ulta")
+		await anim_player.animation_finished
+		$CanvasLayer.player_stats["Skills"]["Ulta"].value=0
+	state=WALK
+
 # Метод, обрабатывающий начало кат-сцены.
 func _on_catscene(start_point,y):
 	"""
@@ -321,6 +341,7 @@ func _on_catscene(start_point,y):
 	if start_point == "up":
 		target_position = y - 50
 		state=TELEPORT
+
 
 # Метод, вызываемый при входе тела в область hit_boxs_body.
 func _on_hit_boxs_body_entered(body: Node2D) -> void:
@@ -346,3 +367,10 @@ func _on_damage_receive(enemy_damage):
 	"""
 	health-=enemy_damage
 	state=DAMAGE
+
+
+func _on_ulta_body_entered(body: Node2D) -> void:
+	body.velocity = Vector2.ZERO
+	
+	hit_enemy.emit(default_damage*100)
+	pass # Replace with function body.

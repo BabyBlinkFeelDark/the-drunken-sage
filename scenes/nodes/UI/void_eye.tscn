@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://cp70txxvtxofl"]
+
+[ext_resource type="Texture2D" uid="uid://q2d5a4equ2vn" path="res://textures/UI/ulta_full.png" id="1_ncukh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_14gma"]
+atlas = ExtResource("1_ncukh")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tnd2b"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_14gma")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_tnd2b")

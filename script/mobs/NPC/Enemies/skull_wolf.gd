@@ -12,7 +12,7 @@ var time_to_search: float
 var del
 var target_player
 var default_damage = 10
-
+var can_mooving:bool = true
 
 enum {
 	IDLE,
@@ -74,14 +74,13 @@ func _process(delta: float) -> void:
 func walk_state(vel_del):
 	if velocity.x == 0:
 		anim.play("idle")
-
-	if target_player:
-		#Перемещение тела к игроку
-		velocity.x = SPEED * direction.x * del
-	
-	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-	anim.play("run")
+	if can_mooving:
+		if target_player:
+			#Перемещение тела к игроку
+			velocity.x = SPEED * direction.x * del
+		else:
+			velocity.x = move_toward(velocity.x, 0, SPEED)
+		anim.play("run")
 	
 	
 	if direction == Vector2(-1, 0):
@@ -133,6 +132,7 @@ func damage_state():
 func _on_chase_area_body_entered(body: Node2D) -> void:
 	#print("Hey,",body)
 	body.hit_enemy.connect(_on_take_damage)
+	body.hit_enemy.connect(_is_can_move)
 	target_player=body
 	state=WALK
 	pass # Replace with function body.
@@ -156,3 +156,7 @@ func _on_take_damage(_input_damage):
 
 func _on_chase_area_body_exited(body: Node2D) -> void:
 	target_player = null
+
+func _is_can_move(_dont_move):
+	print(can_mooving)
+	can_mooving = !_dont_move

@@ -213,7 +213,7 @@ animations = [{
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nyb51"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gplxi"]
-radius = 287.446
+radius = 1246.01
 
 [node name="SkullWolf" instance=ExtResource("1_l6krp")]
 script = ExtResource("2_0xq5x")

@@ -22,8 +22,14 @@ func _process(delta: float) -> void:
 		owner.stamina_changet.connect(_stamina_changet)
 	if player_staminabar.value <= 100:
 		player_staminabar.value+=5*delta
-
+	if player_stats["Skills"]["Ulta"].value>=100:
+		player_stats["Skills"]["Ulta"].value=100
+		$UltaBar/AnimatedSprite2D.visible=true
+	else:
+		print(player_stats["Skills"]["Ulta"].value)
+		player_stats["Skills"]["Ulta"].value+=5*delta
+		$UltaBar/AnimatedSprite2D.visible=false
+		
 func _stamina_changet(cost):
-
 	player_staminabar.value-=cost
 	

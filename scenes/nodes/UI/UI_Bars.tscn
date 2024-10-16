@@ -10,8 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://qtn1k0wb8f1e" path="res://textures/UI/dash_full.png" id="5_l286y"]
 [ext_resource type="Texture2D" uid="uid://djlvvq5kmmcjv" path="res://textures/UI/stamina_full.png" id="6_1xd26"]
 [ext_resource type="Texture2D" uid="uid://bndmp51qfna34" path="res://textures/UI/dash_empty.png" id="6_vvv7i"]
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_pp6dm"]
+[ext_resource type="PackedScene" uid="uid://cp70txxvtxofl" path="res://scenes/nodes/UI/void_eye.tscn" id="9_jkpa4"]
 
 [node name="UI_Bars" type="CanvasLayer"]
 script = ExtResource("1_ap7fv")
@@ -25,6 +24,7 @@ texture_under = ExtResource("1_8hoc8")
 texture_progress = ExtResource("2_eci2a")
 
 [node name="Dash" type="TextureProgressBar" parent="."]
+visible = false
 offset_left = 403.0
 offset_top = 33.0
 offset_right = 443.0
@@ -41,14 +41,14 @@ offset_right = 40.0
 offset_bottom = 40.0
 scale = Vector2(3, 3)
 step = 0.1
-value = 80.0
+value = 100.0
 fill_mode = 3
 texture_under = ExtResource("3_4faj0")
 texture_progress = ExtResource("4_5u4wb")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="UltaBar"]
-scale = Vector2(3, 3)
-sprite_frames = SubResource("SpriteFrames_pp6dm")
+[node name="AnimatedSprite2D" parent="UltaBar" instance=ExtResource("9_jkpa4")]
+visible = false
+position = Vector2(16, 16)
 
 [node name="StaminaBar" type="TextureProgressBar" parent="."]
 offset_left = 24.0

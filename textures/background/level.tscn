@@ -3830,9 +3830,6 @@ collision_mask = 2
 position = Vector2(443, -11)
 shape = SubResource("RectangleShape2D_7l1g5")
 
-[node name="Player" parent="." instance=ExtResource("3_78ia7")]
-position = Vector2(-336, 7)
-
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
 position = Vector2(3, 149)
 energy = 0.6
@@ -3875,6 +3872,18 @@ tile_map_data = PackedByteArray("AADy/wYABAADAAAAAADy/wcABAADAAEAAADy/wgABAADAAI
 tile_set = SubResource("TileSet_o8fh5")
 
 [node name="SkullWolf" parent="." instance=ExtResource("12_xn536")]
-position = Vector2(302, -131)
+position = Vector2(2270, -2)
+
+[node name="SkullWolf2" parent="." instance=ExtResource("12_xn536")]
+position = Vector2(1267, -7)
+
+[node name="SkullWolf3" parent="." instance=ExtResource("12_xn536")]
+position = Vector2(1330, 13)
+
+[node name="SkullWolf4" parent="." instance=ExtResource("12_xn536")]
+position = Vector2(2197, 38)
+
+[node name="Player" parent="." instance=ExtResource("3_78ia7")]
+position = Vector2(1769, -1260)
 
 [connection signal="body_entered" from="StoneRune/CutSceneTrigger" to="." method="_on_cut_scene_trigger_body_entered"]
