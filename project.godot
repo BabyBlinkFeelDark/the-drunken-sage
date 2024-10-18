@@ -123,6 +123,8 @@ down={
 2d_physics/layer_2="Player"
 2d_physics/layer_3="Enemie"
 2d_physics/layer_4="Builds"
+2d_physics/layer_5="HitBox"
+2d_physics/layer_6="HurtBox"
 
 [rendering]
 

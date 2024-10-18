@@ -1,4 +1,4 @@
-[gd_scene load_steps=73 format=3 uid="uid://bej8qow7bg543"]
+[gd_scene load_steps=74 format=3 uid="uid://bej8qow7bg543"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_blaei"]
 [ext_resource type="Texture2D" uid="uid://ym5ihol5qyia" path="res://textures/player/Ulta/Field.png" id="2_1rg4q"]
@@ -14,7 +14,7 @@
 [ext_resource type="FontFile" uid="uid://de4tnt1g4wygd" path="res://textures/fronts/HomeVideo-Bold.otf" id="10_e36dw"]
 [ext_resource type="PackedScene" uid="uid://c66pkb33r7dvw" path="res://scenes/nodes/UI/UI_Bars.tscn" id="11_t40my"]
 
-[sub_resource type="Animation" id="Animation_2rd8k"]
+[sub_resource type="Animation" id="Animation_rnrkw"]
 length = 0.533333
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -53,7 +53,7 @@ tracks/2/keys = {
 "values": [0, 1, 2, 3, 4, 5, 6, 7]
 }
 
-[sub_resource type="Animation" id="Animation_64br7"]
+[sub_resource type="Animation" id="Animation_iurbl"]
 length = 0.2
 loop_mode = 1
 tracks/0/type = "value"
@@ -93,7 +93,7 @@ tracks/2/keys = {
 "values": [0]
 }
 
-[sub_resource type="Animation" id="Animation_qhub1"]
+[sub_resource type="Animation" id="Animation_30cvq"]
 length = 2.0
 loop_mode = 1
 tracks/0/type = "value"
@@ -133,7 +133,7 @@ tracks/2/keys = {
 "values": [0, 1]
 }
 
-[sub_resource type="Animation" id="Animation_xd44f"]
+[sub_resource type="Animation" id="Animation_e42e5"]
 length = 0.571429
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -172,7 +172,7 @@ tracks/2/keys = {
 "values": [0, 1, 2, 3]
 }
 
-[sub_resource type="Animation" id="Animation_ouuwr"]
+[sub_resource type="Animation" id="Animation_sqbvp"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -210,8 +210,20 @@ tracks/2/keys = {
 "update": 0,
 "values": [Vector2(1, 1)]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("../Pivot:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(50, -75)]
+}
 
-[sub_resource type="Animation" id="Animation_qbl81"]
+[sub_resource type="Animation" id="Animation_r4aq4"]
 length = 0.4
 loop_mode = 1
 tracks/0/type = "value"
@@ -251,7 +263,7 @@ tracks/2/keys = {
 "values": [0, 1, 2, 3, 4, 5]
 }
 
-[sub_resource type="Animation" id="Animation_0waxe"]
+[sub_resource type="Animation" id="Animation_la33r"]
 length = 2.125
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -340,13 +352,13 @@ tracks/6/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_id7od"]
 _data = {
-"Dash": SubResource("Animation_2rd8k"),
-"Fall": SubResource("Animation_64br7"),
-"Idle": SubResource("Animation_qhub1"),
-"Jump": SubResource("Animation_xd44f"),
-"RESET": SubResource("Animation_ouuwr"),
-"Run": SubResource("Animation_qbl81"),
-"Ulta": SubResource("Animation_0waxe")
+"Dash": SubResource("Animation_rnrkw"),
+"Fall": SubResource("Animation_iurbl"),
+"Idle": SubResource("Animation_30cvq"),
+"Jump": SubResource("Animation_e42e5"),
+"RESET": SubResource("Animation_sqbvp"),
+"Run": SubResource("Animation_r4aq4"),
+"Ulta": SubResource("Animation_la33r")
 }
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g2mes"]
@@ -714,8 +726,12 @@ size = Vector2(14, 34)
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_dbym4"]
 polygon = PackedVector2Array(-5, 8, -4, 7, 6, 7, 7, 8)
 
-[sub_resource type="SegmentShape2D" id="SegmentShape2D_hgao1"]
-a = Vector2(28, 10)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_somlu"]
+radius = 5.0
+height = 22.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lhgr2"]
+radius = 7.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_l7q3p"]
 radius = 88.0511
@@ -739,12 +755,10 @@ frame = 7
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(1, -16)
 sprite_frames = SubResource("SpriteFrames_gvnpc")
-animation = &"Ulta"
+animation = &"Dash"
 autoplay = "Idle"
-frame = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2(1, -9)
 shape = SubResource("RectangleShape2D_rbd3b")
 
@@ -763,7 +777,7 @@ script = ExtResource("7_ntg5v")
 
 [node name="Camera2D" type="Camera2D" parent="Pivot"]
 zoom = Vector2(3, 3)
-limit_left = -500
+limit_left = -1850
 limit_bottom = 0
 position_smoothing_enabled = true
 
@@ -775,21 +789,31 @@ volume_db = -5.0
 stream = ExtResource("10_ct34r")
 volume_db = -5.0
 
+[node name="HurtBox" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
+position = Vector2(3, -9)
+shape = SubResource("CapsuleShape2D_somlu")
+
 [node name="HitBoxs" type="Node2D" parent="."]
 
 [node name="DashHitBox" type="Area2D" parent="HitBoxs"]
-visible = false
-collision_layer = 0
-collision_mask = 4
+collision_layer = 16
+collision_mask = 32
 monitoring = false
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBoxs/DashHitBox"]
-position = Vector2(-14, -16)
-shape = SubResource("SegmentShape2D_hgao1")
+position = Vector2(3, -9)
+shape = SubResource("CapsuleShape2D_lhgr2")
+debug_color = Color(0.870588, 0, 0.85098, 0.105882)
 
 [node name="Ulta" type="Area2D" parent="HitBoxs"]
-collision_layer = 0
-collision_mask = 4
+visible = false
+collision_layer = 16
+collision_mask = 32
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBoxs/Ulta"]
@@ -808,5 +832,5 @@ text = "Healt"
 
 [node name="CanvasLayer" parent="." instance=ExtResource("11_t40my")]
 
-[connection signal="body_entered" from="HitBoxs/DashHitBox" to="." method="_on_hit_boxs_body_entered"]
+[connection signal="area_entered" from="HitBoxs/DashHitBox" to="." method="_on_dash_hit_box_area_entered"]
 [connection signal="body_entered" from="HitBoxs/Ulta" to="." method="_on_ulta_body_entered"]

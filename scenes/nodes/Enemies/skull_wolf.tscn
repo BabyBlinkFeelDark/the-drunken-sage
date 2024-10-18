@@ -1,8 +1,11 @@
-[gd_scene load_steps=33 format=3 uid="uid://kkj00c5m68fe"]
+[gd_scene load_steps=38 format=3 uid="uid://kkj00c5m68fe"]
 
 [ext_resource type="PackedScene" uid="uid://dnpu0pnmnkcgj" path="res://scenes/nodes/NPC/NPC.tscn" id="1_l6krp"]
-[ext_resource type="Script" path="res://script/mobs/NPC/Enemies/skull_wolf.gd" id="2_0xq5x"]
+[ext_resource type="Script" path="res://script/mobs/NPC/Enemies/Skull wolf/skull_wolf.gd" id="2_0xq5x"]
 [ext_resource type="Texture2D" uid="uid://brwi5d78ic7r1" path="res://textures/skullwolf/Massacre Sprite Sheet.png" id="2_ha7pw"]
+[ext_resource type="Script" path="res://script/mobs/NPC/Enemies/Skull wolf/front.gd" id="4_nmann"]
+[ext_resource type="Script" path="res://scenes/nodes/Enemies/hurt_box.gd" id="4_t7xct"]
+[ext_resource type="Script" path="res://script/mobs/NPC/Enemies/Skull wolf/back.gd" id="5_a3s2d"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7ptbn"]
 size = Vector2(17, 16)
@@ -213,7 +216,15 @@ animations = [{
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nyb51"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gplxi"]
-radius = 1246.01
+radius = 357.022
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_twlpj"]
+a = Vector2(0, -8)
+b = Vector2(0, 15)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_hr7pt"]
+a = Vector2(0, -7)
+b = Vector2(0, 15)
 
 [node name="SkullWolf" instance=ExtResource("1_l6krp")]
 script = ExtResource("2_0xq5x")
@@ -233,7 +244,6 @@ frame_progress = 1.0
 [node name="HitBoxes" parent="." index="3"]
 collision_layer = 0
 collision_mask = 2
-monitorable = false
 
 [node name="CollisionShape2D" parent="HitBoxes" index="0"]
 position = Vector2(-29, -18)
@@ -250,7 +260,30 @@ shape = SubResource("CircleShape2D_gplxi")
 offset_right = 40.0
 offset_bottom = 23.0
 
-[connection signal="body_entered" from="HitBoxes" to="." method="_on_hit_boxes_body_entered"]
-[connection signal="body_exited" from="HitBoxes" to="." method="_on_hit_boxes_body_exited"]
+[node name="HurtBox" type="Node2D" parent="." index="6"]
+script = ExtResource("4_t7xct")
+
+[node name="Front" type="Area2D" parent="HurtBox" index="0"]
+position = Vector2(-28, 0)
+collision_layer = 32
+collision_mask = 16
+script = ExtResource("4_nmann")
+
+[node name="Front" type="CollisionShape2D" parent="HurtBox/Front" index="0"]
+position = Vector2(10, -15)
+shape = SubResource("SegmentShape2D_twlpj")
+debug_color = Color(0, 0.651376, 0.00227697, 0.42)
+
+[node name="Back" type="Area2D" parent="HurtBox" index="1"]
+collision_layer = 32
+collision_mask = 16
+script = ExtResource("5_a3s2d")
+
+[node name="Back" type="CollisionShape2D" parent="HurtBox/Back" index="0"]
+position = Vector2(10, -15)
+shape = SubResource("SegmentShape2D_hr7pt")
+debug_color = Color(0.957254, 0.208389, 0, 0.42)
+
+[connection signal="animation_finished" from="AnimatedSprite2D" to="HurtBox" method="_on_animated_sprite_2d_animation_finished"]
 [connection signal="body_entered" from="ChaseArea" to="." method="_on_chase_area_body_entered"]
 [connection signal="body_exited" from="ChaseArea" to="." method="_on_chase_area_body_exited"]

@@ -1,8 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://bgm4pmir5aadp"]
-
-[ext_resource type="Texture2D" uid="uid://djiv0rvp8q8gj" path="res://textures/UI/global/pause/continue1.png" id="1_t0jlq"]
-[ext_resource type="Texture2D" uid="uid://cw1dpfllnimu8" path="res://textures/UI/global/pause/continue3.png" id="2_8ris1"]
-[ext_resource type="Texture2D" uid="uid://dhrsr3nk45fxn" path="res://textures/UI/global/pause/continue2.png" id="3_l8kj2"]
+[gd_scene format=3 uid="uid://bgm4pmir5aadp"]
 
 [node name="Pause" type="Control"]
 layout_mode = 3
@@ -22,8 +18,14 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="TextureButton" type="TextureButton" parent="TextureRect/VBoxContainer"]
+[node name="Continue" type="Button" parent="TextureRect/VBoxContainer"]
 layout_mode = 2
-texture_normal = ExtResource("1_t0jlq")
-texture_pressed = ExtResource("2_8ris1")
-texture_hover = ExtResource("3_l8kj2")
+text = "Продолжить"
+
+[node name="Settings" type="Button" parent="TextureRect/VBoxContainer"]
+layout_mode = 2
+text = "Настройки"
+
+[node name="Quit" type="Button" parent="TextureRect/VBoxContainer"]
+layout_mode = 2
+text = "Выйти"

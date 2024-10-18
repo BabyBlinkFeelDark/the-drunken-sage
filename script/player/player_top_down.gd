@@ -7,7 +7,7 @@ enum {
 	WALK
 }
 
-const SPEED = 150.0
+const SPEED = 50.0
 
 @onready var anim = $AnimatedSprite2D
 

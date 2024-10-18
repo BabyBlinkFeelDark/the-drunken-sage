@@ -1,74 +1,9 @@
-extends CharacterBody2D
-class_name Player
+extends Player
+class_name StateMachine
 
-# Перечисление состояний персонажа.
-enum {
-	WALK,
-	DEATH,
-	JUMP,
-	FALL,
-	CLIMB,
-	ATTACK,
-	DASH,
-	TELEPORT,
-	ULTA,
-	DAMAGE
-}
-
-# Основные переменные
-var target_position 
-const SPEED = 150.0
-const JUMP_VELOCITY = -400.0
-@onready var anim = $AnimatedSprite2D
-@onready var anim_player = $AnimationPlayer
-@onready var DashAttackArea =$HitBoxs/DashHitBox
-@onready var UltaAttackArea =$HitBoxs/Ulta
-@onready var npc: NPC
-var health = 100
-var stamina 
-var dash_cost = 10
-var jump_scale = 0
-var state 
-
-var time_to_signal = false
-var inJump = false
-var cooldown_dash = 0
-var itsDamage = false
-var itsWall=false
-
-var is_catscene: bool
-var start_catscene: bool
-var footstep_sound: AudioStreamPlayer2D
-var jump_sound: AudioStreamPlayer2D
-var start_point
-var del
-const default_damage = 10
-
-signal u_turn
-signal hit_enemy
-signal stamina_changet
-signal ulta_changet
-signal dont_move
-
-# Метод, вызываемый при инициализации узла.
-func _ready() -> void:
-	"""
-	Инициализация параметров игрока и подключение сигналов.
-  
-	Устанавливает начальное состояние персонажа в WALK, инициализирует звуковые эффекты и подключает сигнал для получения урона.
-	"""
-
-	$EFX.visible=false
-	footstep_sound = $Running
-	jump_sound = $Jump
-	DashAttackArea.visible = false
-	UltaAttackArea.visible = false
-	state = WALK
-	Global.connect("enemy_attack",Callable(self, "_on_damage_receive"))
-	Global.player_hp=health
-	pass
 
 func _process(delta: float) -> void:
+
 	"""
 	Обновляет состояние игрока каждый кадр.
   
@@ -81,6 +16,7 @@ func _process(delta: float) -> void:
 	Global.player_velocity = velocity
 	Global.player_position = global_position
 	Global.player_can_fly.connect(_on_catscene)
+
 
 # Метод, вызываемый каждый кадр в физическом процессе.
 func _physics_process(delta: float) -> void:
@@ -140,7 +76,7 @@ func walk_state(vel_del):
 	:param vel_del: Время, прошедшее с последнего кадра (не используется в данном методе).
 	"""
 	move_and_slide()
-	DashAttackArea.set_monitoring(false)
+
 	$PointLight2D.energy = 0
 	var direction := Input.get_axis("left", "right")
 	if direction:
@@ -193,6 +129,7 @@ func jump_state():
 		
 	state=FALL
 
+
 # Метод для состояния DASH.
 func dash_state(vel):
 	"""
@@ -204,28 +141,29 @@ func dash_state(vel):
 	:param vel: Время, прошедшее с последнего кадра (не используется в данном методе).
 	"""
 	move_and_slide()
-
-	if cooldown_dash == 0.5 and stamina > dash_cost:
+	
+	dash_duration+=get_process_delta_time()
+	$HitBoxs/DashHitBox.set_monitoring(true)
+	if cooldown_dash == 0.5 and stamina > dash_cost and dash_duration<DEFAULT_DASH_DURATION:
+		
 		if time_to_signal:
 			stamina_changet.emit(dash_cost)
 			time_to_signal=false
-		DashAttackArea.set_monitoring(true)
+
 			
 		var direction := Input.get_axis("left", "right")
 		$PointLight2D.energy = lerpf(2, 0, 0.1)
-
-		if direction != 0:
-
+	
+		if direction!= 0:
 			anim_player.play("Dash")
 			$Pivot.position.x = 150 * direction
 			velocity.x += (50 * direction)
 			velocity.y = 0
-				
 			await anim_player.animation_finished
 			cooldown_dash = 0
-
+	dash_duration = 0
 		
-	DashAttackArea.set_monitoring(false)
+	$HitBoxs/DashHitBox.set_monitoring(false)
 	if not is_on_floor():
 		state = FALL
 	else:
@@ -319,7 +257,7 @@ func teleport_state():
 		velocity.y=0
 		Global.spawn_portal()
 
-
+	
 func ulta_state():
 	if $CanvasLayer.player_stats["Skills"]["Ulta"].value==100:
 		
@@ -329,6 +267,7 @@ func ulta_state():
 		await anim_player.animation_finished
 		$CanvasLayer.player_stats["Skills"]["Ulta"].value=0
 	state=WALK
+ 
 
 # Метод, обрабатывающий начало кат-сцены.
 func _on_catscene(start_point,y):
@@ -341,19 +280,6 @@ func _on_catscene(start_point,y):
 	if start_point == "up":
 		target_position = y - 50
 		state=TELEPORT
-
-
-# Метод, вызываемый при входе тела в область hit_boxs_body.
-func _on_hit_boxs_body_entered(body: Node2D) -> void:
-	"""
-	Обрабатывает событие входа другого тела в зону hit_boxs_body.
-  
-	Вызывает сигнал hit_enemy с базовым значением урона.
-  
-	:param body: Вошедшее тело (Node2D).
-	"""
-	# Триггер: в зону hit_boxs_body вошло тело (body)
-	hit_enemy.emit(default_damage)
 
 
 # Метод, обрабатывающий получение урона персонажем.
@@ -369,8 +295,8 @@ func _on_damage_receive(enemy_damage):
 	state=DAMAGE
 
 
-func _on_ulta_body_entered(body: Node2D) -> void:
-	body.velocity = Vector2.ZERO
-	
-	hit_enemy.emit(default_damage*100)
+func _on_dash_hit_box_area_entered(area: Area2D) -> void:
+	if area.has_method("hit"):
+		area.hit(DEFAULT_DAMAGE)
+
 	pass # Replace with function body.

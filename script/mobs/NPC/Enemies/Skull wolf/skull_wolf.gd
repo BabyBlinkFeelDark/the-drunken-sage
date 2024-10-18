@@ -11,9 +11,13 @@ var time_since_last_attack: float = 0
 var time_to_search: float
 var del
 var target_player
+var can_take_damage: bool = true
 var default_damage = 10
 var can_mooving:bool = true
-
+@onready var front = $HurtBox/Front
+@onready var back = $HurtBox/Back
+@onready var hit_box = $HitBoxes
+@onready var hurtbox = $HurtBox
 enum {
 	IDLE,
 	WALK,
@@ -30,11 +34,11 @@ var state: int = 0:
 
 
 func _ready() -> void:
+
 	state = WALK
 	pass
 	
-func _process(delta: float) -> void:
-
+func _physics_process(delta: float) -> void:
 	match state:
 		WALK:
 			walk_state(del)
@@ -59,11 +63,6 @@ func _process(delta: float) -> void:
 	del = delta
 	$Label.set_text(str(health))
 	move_and_slide()
-	#if target_player:
-		#print("stay here", target_player.position)
-		#print("direction", direction)
-		#print("state ", state)
-		#print("its_player ", its_player)
 	if not is_on_floor():
 		velocity.y += get_gravity().y * delta
 	if health<=0:
@@ -72,6 +71,8 @@ func _process(delta: float) -> void:
 
 
 func walk_state(vel_del):
+	$HurtBox/Back/Back.disabled = false
+	$HurtBox/Front/Front.disabled = false
 	if velocity.x == 0:
 		anim.play("idle")
 	if can_mooving:
@@ -89,8 +90,14 @@ func walk_state(vel_del):
 		anim.play("Walk")
 	if direction.x < 0:
 		anim.set_flip_h(false)
+		$HurtBox.set_scale(Vector2(1,1))
+		$HurtBox/Front/Front.disabled = false
+		$HurtBox/Back/Back.disabled = false
 	elif direction.x > 0:
+		$HurtBox.set_scale(Vector2(-1,1))
 		anim.set_flip_h(true)
+		$HurtBox/Front/Front.disabled = false
+		$HurtBox/Back/Back.disabled = false
 		
 	if alive:
 		if its_player==true:
@@ -119,7 +126,7 @@ func hit_state():
 
 ##Фунция нанесения урона игроку	
 func hit():
-	Global.emit_signal("enemy_attack",default_damage)
+	Global.player_hp-=default_damage
 	time_since_last_attack = 0
 
 
@@ -127,36 +134,26 @@ func damage_state():
 	velocity = Vector2.ZERO
 	anim.play("damage")
 	await anim.animation_finished
+
 	state=WALK
 	
 func _on_chase_area_body_entered(body: Node2D) -> void:
-	#print("Hey,",body)
-	body.hit_enemy.connect(_on_take_damage)
-	body.hit_enemy.connect(_is_can_move)
-	target_player=body
+	target_player=body	
 	state=WALK
-	pass # Replace with function body.
-
-
-func _on_hit_boxes_body_entered(body: Node2D) -> void:
-	its_player = true
-	pass # Replace with function body.
-
-
-func _on_hit_boxes_body_exited(body: Node2D) -> void:
-	its_player = false
-	time_since_last_attack = 0
-	pass # Replace with function body.
-	
-func _on_take_damage(_input_damage):
-	state=DAMAGE
-	time_since_last_attack = 0
-	health-=_input_damage
+	pass 
 
 
 func _on_chase_area_body_exited(body: Node2D) -> void:
 	target_player = null
 
 func _is_can_move(_dont_move):
-	print(can_mooving)
-	can_mooving = !_dont_move
+	#can_mooving = !_dont_move
+	pass
+	
+func take_hit(value: int):
+	health-=value
+	state = DAMAGE
+
+func reset_damage_flag():
+	await get_tree().create_timer(0.5).timeout
+	can_take_damage = true
