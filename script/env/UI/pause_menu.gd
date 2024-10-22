@@ -1,10 +1,8 @@
-extends Node2D
-
-
+extends CanvasLayer
+@onready var pause = $Pause
+signal continue_pressed
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	#Dialogic.start("begin")
-	#Dialogic.start("where_has_he_disappeared")
 	pass # Replace with function body.
 
 
@@ -13,6 +11,10 @@ func _process(delta: float) -> void:
 	pass
 
 
-func _on_cut_scene_trigger_body_entered(body: Node2D) -> void:
+func _on_continue_pressed() -> void:
+	continue_pressed.emit(true)
 	pass
-	#Dialogic.start("RuneStone")
+
+
+func _on_quit_pressed() -> void:
+	get_tree().quit()	

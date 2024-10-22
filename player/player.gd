@@ -102,9 +102,8 @@ func walk_state(vel_del):
 		state=DASH
 	if Input.is_action_just_pressed("jump") and jump_scale<3:
 		state = JUMP
-	if Input.is_action_just_pressed("LMB"):
-		
-		state=ULTA
+	#if Input.is_action_just_pressed("LMB"):
+		#state=ULTA
 	if not is_on_floor():
 		state = FALL
 	if health<=0:

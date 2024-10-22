@@ -830,7 +830,7 @@ theme_override_fonts/font = ExtResource("10_e36dw")
 theme_override_font_sizes/font_size = 15
 text = "Healt"
 
-[node name="CanvasLayer" parent="." instance=ExtResource("11_t40my")]
+[node name="UI_Bars" parent="." instance=ExtResource("11_t40my")]
 
 [connection signal="area_entered" from="HitBoxs/DashHitBox" to="." method="_on_dash_hit_box_area_entered"]
 [connection signal="body_entered" from="HitBoxs/Ulta" to="." method="_on_ulta_body_entered"]

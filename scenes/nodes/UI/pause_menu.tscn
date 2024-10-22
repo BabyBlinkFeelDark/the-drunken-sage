@@ -1,6 +1,14 @@
-[gd_scene format=3 uid="uid://bgm4pmir5aadp"]
+[gd_scene load_steps=4 format=3 uid="uid://bgm4pmir5aadp"]
 
-[node name="Pause" type="Control"]
+[ext_resource type="Texture2D" uid="uid://bg6pgrowcx00v" path="res://textures/env/UI/menu/background/pause.png" id="1_bm7up"]
+[ext_resource type="Script" path="res://script/env/UI/pause_menu.gd" id="1_yt6ep"]
+[ext_resource type="FontFile" uid="uid://clrv3ggr7g1b5" path="res://textures/fronts/HomeVideo-Regular.otf" id="2_yelsr"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+script = ExtResource("1_yt6ep")
+
+[node name="Pause" type="Control" parent="."]
+process_mode = 2
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -8,24 +16,41 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="Pause"]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 1344.0
+offset_bottom = 768.0
+texture = ExtResource("1_bm7up")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Pause/TextureRect"]
+clip_contents = true
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 64.0
+offset_top = 320.0
+offset_right = 384.0
+offset_bottom = 576.0
+alignment = 1
 
-[node name="Continue" type="Button" parent="TextureRect/VBoxContainer"]
+[node name="Continue" type="Button" parent="Pause/TextureRect/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_direction = 3
 layout_mode = 2
+size_flags_stretch_ratio = 0.0
+theme_override_fonts/font = ExtResource("2_yelsr")
 text = "Продолжить"
 
-[node name="Settings" type="Button" parent="TextureRect/VBoxContainer"]
+[node name="Settings" type="Button" parent="Pause/TextureRect/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_yelsr")
 text = "Настройки"
 
-[node name="Quit" type="Button" parent="TextureRect/VBoxContainer"]
+[node name="Quit" type="Button" parent="Pause/TextureRect/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_yelsr")
 text = "Выйти"
+
+[connection signal="pressed" from="Pause/TextureRect/VBoxContainer/Continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="Pause/TextureRect/VBoxContainer/Quit" to="." method="_on_quit_pressed"]

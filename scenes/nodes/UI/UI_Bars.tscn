@@ -16,6 +16,7 @@
 script = ExtResource("1_ap7fv")
 
 [node name="HeathBar" type="TextureProgressBar" parent="."]
+modulate = Color(1, 1, 1, 0.623529)
 offset_right = 40.0
 offset_bottom = 40.0
 scale = Vector2(3, 3)
@@ -37,6 +38,7 @@ texture_over = ExtResource("5_l286y")
 texture_progress = ExtResource("6_vvv7i")
 
 [node name="UltaBar" type="TextureProgressBar" parent="."]
+modulate = Color(1, 1, 1, 0.623529)
 offset_right = 40.0
 offset_bottom = 40.0
 scale = Vector2(3, 3)
@@ -51,6 +53,7 @@ visible = false
 position = Vector2(16, 16)
 
 [node name="StaminaBar" type="TextureProgressBar" parent="."]
+modulate = Color(1, 1, 1, 0.623529)
 offset_left = 24.0
 offset_top = 45.0
 offset_right = 152.0

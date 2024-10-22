@@ -26,7 +26,6 @@ func _process(delta: float) -> void:
 		player_stats["Skills"]["Ulta"].value=100
 		$UltaBar/AnimatedSprite2D.visible=true
 	else:
-		print(player_stats["Skills"]["Ulta"].value)
 		player_stats["Skills"]["Ulta"].value+=5*delta
 		$UltaBar/AnimatedSprite2D.visible=false
 		

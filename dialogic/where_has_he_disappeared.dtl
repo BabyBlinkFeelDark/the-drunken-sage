@@ -1,0 +1,31 @@
+do Global.get_pause(false)
+join player_dark (smile_dark) left
+player_dark (speak_dark): Скучали, девочки?
+leave player_dark
+join "Garry Bear" right
+"Garry Bear": Оооо да! Ты так нажрался, что хотел переплыть реку...
+leave "Garry Bear"
+join Papa right
+Papa: Верхом на шлюхах
+leave Papa
+join "Garry Bear" right
+"Garry Bear": Верхом на шлюхах... 
+"Garry Bear": Хахаха!
+leave "Garry Bear"
+join player_dark (question_dark) left
+player_dark (question_dark): ...
+player_dark (smile_dark): А в чем проблема?
+player_dark (speak_dark): Можем повторить!
+leave player_dark
+join Papa (shocked_dark) right
+Papa: А проблема в том, что ты даже свое пыряло-ковыряло проебал!
+leave Papa
+join player_dark (smile_dark) left
+player_dark (smile_dark): Чтобы я без вас делал мужики?
+leave player_dark
+join Papa (shocked_dark) right
+Papa: В присядку бы дрочил! Хахаха! 
+Papa: И сегодня ты угощаешь!
+leave Papa
+join "Garry Bear" right
+"Garry Bear": Дорогуша! Неси все пиво что есть! Боззе сегодня угощает!

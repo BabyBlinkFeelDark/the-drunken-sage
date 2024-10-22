@@ -23,6 +23,8 @@ Dialogic="*res://addons/dialogic/Core/DialogicGameHandler.gd"
 [dialogic]
 
 directories/dch_directory={
+"Garry Bear": "res://dialogic/char/Garry Bear/Garry Bear.dch",
+"Papa": "res://dialogic/char/Papa/Papa.dch",
 "Player": "res://dialogic/char/Player.dch",
 "RuneStone": "res://dialogic/char/RuneStone/RuneStone.dch",
 "player_dark": "res://dialogic/char/player/withShadow/player_dark.dch"
@@ -30,7 +32,8 @@ directories/dch_directory={
 directories/dtl_directory={
 "RuneStone": "res://dialogic/RuneStone.dtl",
 "begin": "res://dialogic/begin.dtl",
-"tavern_input": "res://dialogic/tavern_input.dtl"
+"tavern_input": "res://dialogic/tavern_input.dtl",
+"where_has_he_disappeared": "res://dialogic/where_has_he_disappeared.dtl"
 }
 glossary/default_case_sensitive=true
 layout/style_list=[]
@@ -58,8 +61,10 @@ variables={}
 
 [display]
 
+window/size/mode=3
 window/subwindows/embed_subwindows=false
-window/stretch/scale_mode="integer"
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [editor_plugins]
 
